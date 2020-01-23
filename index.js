@@ -1,5 +1,8 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
+const homeRouts = require('./routes/home');
+const addRouts = require('./routes/add');
+const coursesRouts = require('./routes/courses');
 
 const app = express();
 
@@ -12,14 +15,12 @@ app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
 app.set('views', 'views');
 
+app.use(express.static('public')); // регистрация роутеров
+app.use(express.urlencoded({extended: true})) // обработка данных POST метод
+app.use('/', homeRouts);
+app.use('/add', addRouts);
+app.use('/courses', coursesRouts);
 
-app.get('/', (req, res) => {
-    res.render('index')
-});
-
-app.get('/about', (req, res) => {
-    res.render('about')
-});
 
 const PORT = process.env.PORT || 3000;
 
