@@ -1,9 +1,13 @@
-document.querySelectorAll(".price").forEach(node => {
-    node.textContent = new Intl.NumberFormat("uk",
+const coursePrice = (price) => {
+    return new Intl.NumberFormat("uk",
         {
             currency: "UAH",
             style: "currency"
-        }).format(node.textContent);
+        }).format(price);
+};
+
+document.querySelectorAll(".price").forEach(node => {
+    node.textContent = coursePrice(node.textContent);
 });
 
 
@@ -17,7 +21,23 @@ if ($card) {
                 method: "delete"
             }).then(res => res.json())
                 .then(card => {
-                    console.log(card);
+                    if (card.courses.length) {
+                        const html = card.courses.map((c) => {
+                            return `
+                <tr>
+                    <td>${c.title}</td>
+                    <td>${c.count}</td>
+                    <td>
+                        <button class="btn btn-small js-remove"  data-id="${c.id}">Удалить</button>
+                    </td>
+                </tr>
+`;
+                        }).join("");
+                        $card.querySelector("tbody").innerHTML = html;
+                        $card.querySelector(".price").textContent = coursePrice(card.price);
+                    } else {
+                        $card.innerHTML = "<p>Корзина пуста</p>";
+                    }
                 });
         }
     });
