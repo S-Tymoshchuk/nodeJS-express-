@@ -5,6 +5,7 @@ const cardRouts = require("./routes/card");
 const addRouts = require("./routes/add");
 const coursesRouts = require("./routes/courses");
 const path = require("path");
+const mongoose = require("mongoose");
 
 
 const app = express();
@@ -26,9 +27,33 @@ app.use("/card", cardRouts);
 app.use("/add", addRouts);
 app.use("/courses", coursesRouts);
 
-
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is runing ${PORT}`);
-});
+//const password = `aKXL9epgbeUWRX14`;
+
+
+const connectDB = async () => {
+    try {
+        const url = "mongodb+srv://sergey:eRRC850rUb3IF4pA@cluster0-gcnir.mongodb.net/test?retryWrites=true&w=majority";
+        await mongoose.connect(url, {
+            useNewUrlParser: true,
+            useCreateIndex: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false
+        });
+        app.listen(PORT, () => {
+            console.log("MongoDB Conected");
+        });
+
+    } catch (err) {
+        console.error(err.message);
+        process.exit(1);
+    }
+};
+
+
+connectDB();
+
+
+
+
